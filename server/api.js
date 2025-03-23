@@ -62,7 +62,7 @@ app.get('/api/interval', async (req, res) => {
     }
 });
 
-// back.getLimitData(100)
+back
 
 // Запуск сервера
 app.listen(3030, () => {

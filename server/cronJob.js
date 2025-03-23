@@ -40,8 +40,12 @@ class API {
             const lst = response.data.Data.Data
             console.log(lst.length)
             if(lst.length >= 0){
-                for(let res of lst){
-                    await this.fetchAndSaveOneData(res)
+                if(limit === 1){
+                    await this.fetchAndSaveOneData(lst[1])
+                } else {
+                    for(let res of lst){
+                        await this.fetchAndSaveOneData(res)
+                    }
                 }
             } else {
                 console.log("ERROR")
@@ -53,12 +57,8 @@ class API {
     }
 
     async createOneNodeEveryDay(){
-        cron.schedule('1 * * * *', () => {
-            console.log('Запуск задачи...');
-        });
-
-         cron.schedule('0 8 * * *', async () => {
-             console.log('Задача запущена в 8:00 утра по Москве');
+         cron.schedule('0 12 * * *', async () => {
+             console.log('Задача запущена в 10:00 утра по Москве');
              await this.getLimitData(1);
          }, {
              timezone: 'Europe/Moscow'
@@ -66,9 +66,8 @@ class API {
     }
 }
 
-export const back =  new API()
-
-
+const api = new API()
+export const back =  api.createOneNodeEveryDay()
 
 // Для тестирования можно вызвать функцию вручную
 // fetchAndSaveWeather();
