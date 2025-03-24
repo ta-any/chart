@@ -2,6 +2,36 @@
 import express from 'express';
 import { pool } from './config.js';
 import { back } from './cronJob.js'
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url'; // Импортируем утилиту для преобразования URL в путь
+
+// Эмулируем __dirname для ES-модулей
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const initDatabase = async () => {
+    const scriptPath = path.join(__dirname, '../db/init.sql');
+
+    try {
+        // Проверка существования файла
+        await fs.access(scriptPath);
+
+        // Чтение SQL-скрипта
+        const script = await fs.readFile(scriptPath, 'utf8');
+
+        // Выполнение SQL-скрипта
+        await pool.query(script);
+
+        console.log('Database initialized successfully!');
+    } catch (err) {
+        console.error('Error initializing database:', err);
+        process.exit(1); // Завершение процесса с ошибкой
+    }
+};
+
+// Вызов функции инициализации базы данных
+// initDatabase();
 
 const app = express();
 
@@ -20,7 +50,7 @@ app.get('/api', async (req, res) => {
     }
 
     try {
-        const [results] = await pool.query(query, [data], (err, results) => {
+        const [results] = await pool.execute(query, [data], (err, results) => {
             if (err) {
                 console.error('Ошибка при выполнении запроса:', err);
                 return res.status(500).json({ error: 'Ошибка сервера' });
@@ -50,7 +80,7 @@ app.get('/api/interval', async (req, res) => {
     const query = 'SELECT * FROM tprices WHERE data BETWEEN ? AND ?';
 
     try {
-        const [results] = await pool.query(query, [endDate, startDate]);
+        const [results] = await pool.execute(query, [endDate, startDate]);
 
         if (results.length === 0) {
             return res.status(404).json({ error: 'Данные не найдены' });

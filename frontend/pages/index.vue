@@ -76,8 +76,8 @@ export default {
       if (formattedDate1 === formattedDate2) {
         return [`${formatDate(addDays(date1, 1))}`, `${formatDate(addDays(date1, -1))}` ]
 
-      } else if (formattedDate1 === formatDate(addDays(date2, -1)) || formattedDate1 === formatDate(addDays(date1, -1))) {
-        return [formatDate(addDays(date2, 1)), formatDate(addDays(date1, -1))]
+      } else if (formattedDate1 === formatDate(addDays(date2, 1)) || formattedDate1 === formatDate(addDays(date1, -1))) {
+        return [formatDate(addDays(date2, 2)), formatDate(addDays(date1, 2))]
 
       } else {
         return [formattedDate1, formattedDate2];

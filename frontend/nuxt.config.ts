@@ -10,6 +10,16 @@ export default defineNuxtConfig({
       link: []
     }
   },
+  ssr: true,
   compatibilityDate: '2024-11-01',
-  devtools: { enabled: false }
+  devtools: { enabled: false },
+  nitro: {
+    devProxy: {
+      '/api': {
+        target: 'http://localhost:3030',
+        changeOrigin: true
+      }
+    }
+  }
+
 })
